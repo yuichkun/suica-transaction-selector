@@ -20,13 +20,19 @@ const MONTHS = [
   { value: 12, label: "12月" }
 ]
 
+function Header({ children }: { children: React.ReactNode }) {
+  return <div className="my-4 text-xl text-center">{children}</div>
+}
+
 function IndexPopup() {
   const [sum, setSum] = useState<number | null>(null)
   return (
-    <div className="w-[300px] h-[800px] pt-4 px-2 bg-gradient-to-bl from-lime-300 via-teal-300 to-blue-400">
-      <h1 className="text-lg text-center">Suica 交通費計算ヘルパー</h1>
+    <div className="w-[600px] h-[800px] pt-4 px-2 bg-gradient-to-bl from-lime-300 via-teal-300 to-blue-400">
+      <h1 className="text-xl text-center font-bold">
+        Suica 交通費計算ヘルパー
+      </h1>
       <div className="mt-6">
-        <div className="mb-4 text-sm text-center">経費計算する月を選択</div>
+        <Header>1. 交通費に該当するものを自動選択させたい月を選択</Header>
         <Select
           isMulti
           name="months"
@@ -47,6 +53,8 @@ function IndexPopup() {
           closeMenuOnSelect={false}
         />
       </div>
+      <Header>2.（該当項目があれば）手でチェックを追加・削除</Header>
+      <Header>3. 合計額を計算</Header>
       <div className="grid place-content-center">
         <button
           onClick={() => {
@@ -71,9 +79,14 @@ function IndexPopup() {
         </button>
 
         {sum !== null && (
-          <div>
+          <div className="text-3xl font-bold mt-8 underline">
             合計額:
-            <span>{Math.abs(sum)}</span>
+            <span>
+              {Math.abs(sum).toLocaleString("ja-JP", {
+                style: "currency",
+                currency: "JPY"
+              })}
+            </span>
           </div>
         )}
       </div>
