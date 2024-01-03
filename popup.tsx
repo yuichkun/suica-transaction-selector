@@ -3,7 +3,7 @@ import Select from "react-select"
 
 import "./style.css"
 
-import { checkSelectedMonth } from "./script"
+import { calcSum, checkSelectedMonth } from "./script"
 
 const MONTHS = [
   { value: 1, label: "1月" },
@@ -21,18 +21,7 @@ const MONTHS = [
 ]
 
 function IndexPopup() {
-  const [selectedMonths, setSelectedMonths] = useState<number[]>([])
-
-  const handleClick = () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id as any },
-        func: checkSelectedMonth,
-        args: [selectedMonths] // Pass the month as an argument
-      })
-    })
-  }
-
+  const [sum, setSum] = useState<number | null>(null)
   return (
     <div className="w-[300px] h-[800px] pt-4 px-2 bg-gradient-to-bl from-lime-300 via-teal-300 to-blue-400">
       <h1 className="text-lg text-center">Suica 交通費計算ヘルパー</h1>
@@ -43,17 +32,50 @@ function IndexPopup() {
           name="months"
           options={MONTHS}
           onChange={(months) => {
-            setSelectedMonths(months.map((m) => m.value))
+            const selectedMonths = months.map((m) => m.value)
+            chrome.tabs.query(
+              { active: true, currentWindow: true },
+              function (tabs) {
+                chrome.scripting.executeScript({
+                  target: { tabId: tabs[0].id as any },
+                  func: checkSelectedMonth,
+                  args: [selectedMonths] // Pass the month as an argument
+                })
+              }
+            )
           }}
           closeMenuOnSelect={false}
         />
       </div>
       <div className="grid place-content-center">
         <button
-          onClick={handleClick}
+          onClick={() => {
+            chrome.tabs.query(
+              { active: true, currentWindow: true },
+              function (tabs) {
+                chrome.scripting.executeScript(
+                  {
+                    target: { tabId: tabs[0].id as any },
+                    func: calcSum
+                  },
+                  ([{ result }]) => {
+                    console.log("result", result)
+                    setSum(result)
+                  }
+                )
+              }
+            )
+          }}
           className="mt-6 text-lg rounded-lg border-4 px-3 border-blue-400 bg-white">
           合計額を計算
         </button>
+
+        {sum !== null && (
+          <div>
+            合計額:
+            <span>{Math.abs(sum)}</span>
+          </div>
+        )}
       </div>
     </div>
   )

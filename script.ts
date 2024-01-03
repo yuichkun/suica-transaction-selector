@@ -1,17 +1,16 @@
-function getCheckedRows(): HTMLTableRowElement[] {
-  const rows = Array.from(document.querySelectorAll(".whtBg > input:checked"))
-  return rows.map((row) => row.closest("tr")) as HTMLTableRowElement[]
-}
+export function calcSum() {
+  function getCheckedRows(): HTMLTableRowElement[] {
+    const rows = Array.from(document.querySelectorAll(".whtBg > input:checked"))
+    return rows.map((row) => row.closest("tr")) as HTMLTableRowElement[]
+  }
+  function getValFromRow(row: HTMLTableRowElement) {
+    const stringValue = (
+      row.querySelector("td:nth-child(8) > font") as HTMLDivElement
+    ).innerText
+    const numberValue = parseFloat(stringValue.replace(/,/g, ""))
+    return isNaN(numberValue) ? 0 : numberValue
+  }
 
-function getValFromRow(row: HTMLTableRowElement) {
-  const stringValue = (
-    row.querySelector("td:nth-child(8) > font") as HTMLDivElement
-  ).innerText
-  const numberValue = parseFloat(stringValue.replace(/,/g, ""))
-  return isNaN(numberValue) ? 0 : numberValue
-}
-
-function calcSum() {
   return getCheckedRows().reduce((acc, cur) => {
     const curVal = getValFromRow(cur)
     console.log("acc, curVal", acc, curVal)
