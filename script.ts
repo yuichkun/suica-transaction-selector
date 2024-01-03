@@ -19,7 +19,7 @@ function calcSum() {
   }, 0)
 }
 
-export function checkSelectedMonth(month: number) {
+export function checkSelectedMonth(months: number[]) {
   function getAllRows(): HTMLTableRowElement[] {
     return Array.from(document.querySelectorAll("tr.noline ~ tr"))
   }
@@ -55,6 +55,10 @@ export function checkSelectedMonth(month: number) {
       .filter((row) => filterRowByMonth(row, month))
       .filter((row) => filterRowByCategory(row, "入"))
   }
+
   uncheckAllRows()
-  getTransportationRowsWithinMonth(month).forEach(checkRow)
+
+  for (const month of months) {
+    getTransportationRowsWithinMonth(month).forEach(checkRow)
+  }
 }

@@ -28,7 +28,7 @@ function IndexPopup() {
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id as any },
         func: checkSelectedMonth,
-        args: [selectedMonths[0]] // Pass the month as an argument
+        args: [selectedMonths] // Pass the month as an argument
       })
     })
   }
@@ -45,6 +45,7 @@ function IndexPopup() {
           onChange={(months) => {
             setSelectedMonths(months.map((m) => m.value))
           }}
+          closeMenuOnSelect={false}
         />
       </div>
       <div className="grid place-content-center">
