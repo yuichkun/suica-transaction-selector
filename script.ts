@@ -42,17 +42,17 @@ export function checkSelectedMonth(months: number[]) {
     return month === targetMonth
   }
 
-  function filterRowByCategory(row: HTMLTableRowElement, categoryStr: string) {
-    return (
-      (row.querySelector("td:nth-child(3)") as HTMLDivElement).innerText ===
-      categoryStr
-    )
+  function filterRowByCategory(row: HTMLTableRowElement, pattern: RegExp) {
+    const rowCategory = (row.querySelector("td:nth-child(3)") as HTMLDivElement)
+      .innerText
+    return pattern.test(rowCategory)
   }
 
   function getTransportationRowsWithinMonth(month: number) {
+    const pattern = /^＊?入$/
     return getAllRows()
       .filter((row) => filterRowByMonth(row, month))
-      .filter((row) => filterRowByCategory(row, "入"))
+      .filter((row) => filterRowByCategory(row, pattern))
   }
 
   uncheckAllRows()
